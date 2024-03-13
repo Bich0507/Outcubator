@@ -1,0 +1,5 @@
+##############CREATE users TABLE
+CREATE TABLE users(
+  user_id INT,
+  username VARCHAR(50)
+  )
