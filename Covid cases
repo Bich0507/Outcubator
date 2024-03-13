@@ -1,0 +1,30 @@
+##############QUERY
+WITH t1 as (
+SELECT 
+ reported_date,
+ location,
+ sum(new_cases) OVER (PARTITION BY location) as running_total_cases,
+ sum(new_deaths) OVER (PARTITION BY location) as running_total_deaths
+FROM covid_cases
+  ),
+  
+t2 as (
+SELECT 
+ reported_date,
+ location,
+ new_cases,
+ new_deaths
+FROM covid_cases
+WHERE reported_date = '2022-02-16')
+  
+SELECT
+ t2.reported_date,
+ t2.location,
+ t2.new_cases,
+ t2.new_deaths,
+ t1.running_total_cases,
+ t1.running_total_deaths
+FROM t1
+RIGHT JOIN t2
+ on t1.reported_date = t2.reported_date and t1.location = t2.location
+ORDER BY t1.running_total_cases DESC
