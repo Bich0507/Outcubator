@@ -3,3 +3,63 @@ CREATE TABLE users(
   user_id INT,
   username VARCHAR(50)
   )
+
+##############INSERT DATA TO user TABLE 
+INSERT INTO users (user_id, username)
+VALUES (1,'John Doe'),
+(2,'Jane Don'),
+(3,'Alice Jones'),
+(4,'Lisa Romero');
+
+SELECT *
+FROM users
+
+##############CREATE training_details TABLE
+CREATE TABLE training_details(
+  user_training_id INT,
+  user_id INT,
+  training_id INT,
+  training_date DATE)
+
+
+##############INSERT DATA TO training_details TABLE 
+INSERT INTO training_details
+VALUES (1,1,1,'2015-08-02'),
+(2,2,1,'2015-08-03'),
+(3,3,2,'2015-08-02'),
+(4,4,2,'2015-08-04'),
+(5,2,2,'2015-08-03'),
+(6,1,1,'2015-08-02'),
+(7,3,2,'2015-08-04'),
+(8,4,3,'2015-08-03'),
+(9,1,4,'2015-08-03'),
+(10,3,1,'2015-08-02'),
+(11,4,2,'2015-08-04'),
+(12,3,2,'2015-08-02'),
+(13,1,1,'2015-08-02'),
+(14,4,3,'2015-08-03');
+
+SELECT *
+FROM training_details
+
+##############QUERY to get the list of users who took a training lesson more than once in the same day, grouped by user and training lesson
+WITH t1 as (
+SELECT 
+ user_id,
+ training_date,
+ training_id,
+ count(user_training_id) as count_lesson
+FROM training_details
+GROUP BY 1, 2, 3)
+
+SELECT 
+  t1.user_id,
+  t2.username,
+  t1.training_id,
+  t1.training_date,
+  t1.count_lesson
+FROM t1
+LEFT JOIN users t2
+ on t1.user_id = t2.user_id
+WHERE t1.count_lesson > 1
+ORDER BY t1.training_date DESC
